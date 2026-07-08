@@ -1,0 +1,15 @@
+[project]
+name = "itytsoft-hid-forge"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "hidapi>=0.15.0",
+]
+
+[tool.uv]
+package = true
+
+[project.scripts]
+set-key = "itytsoft_hid_forge.set_key:main"

@@ -41,9 +41,9 @@ wheels = [
 ]
 
 [[package]]
-name = "itytsoft-1key-forge"
+name = "itytsoft-hid-forge"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "hidapi" },
 ]

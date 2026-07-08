@@ -1,5 +1,6 @@
 import hid
 import time
+import sys
 
 # ==============================================================================
 # 完整解鎖：全標準鍵盤鍵位與高階 F13-F24 映射表 (USB HID Usage ID)
@@ -299,11 +300,45 @@ def burn_to_device(path, key_chain, layers):
         return False
 
 
+def find_valid_wired_device():
+    """
+    檢查並尋找合法的有線直連裝置。
+    如果發現無線接收器 (Dongle) 特徵，主動攔截並提示。
+    """
+    TARGET_VID = 0x514C
+    TARGET_PID = 0x4155
+
+    devices = hid.enumerate(TARGET_VID, TARGET_PID)
+
+    if not devices:
+        print("❌ 錯誤：找不到 itytsoft 鍵盤裝置！")
+        print("🔌 請確認鍵盤是否已透過【USB 傳輸線】連接至電腦。")
+        return None
+
+    # 檢查是否有任何通道的路徑包含無線接收器的特徵 "Col03"
+    for dev in devices:
+        path_str = dev["path"].decode("utf-8", errors="ignore")
+        if "Col03" in path_str:
+            print("\n❌ 偵測到 itytsoft 無線接收器 (Dongle)！")
+            print("💡 警告：本小鍵盤硬體不支援「無線無線改鍵」功能。")
+            print("🔌 請拔掉無線接收器，並改用【USB 傳輸線】直連鍵盤後再試。")
+            return None
+
+    # 如果通過檢查，回傳第一個找到的有線裝置路徑 (或裝置資訊)
+    # 註：這裡可以依據你原本 burn_to_device 需要傳傳入的 path 來處理
+    return devices[0]["path"]
+
+
 def main():
     print("=======================================================")
     print("        itytsoft MINI 鍵盤 ── 高效能動態改鍵系統         ")
     print("   (Current Status: Only 1-Key Hardware Supported)     ")
     print("=======================================================")
+
+    device_path = find_valid_wired_device()
+    if not device_path:
+        print("\n👋 程式因硬體連線錯誤已終止。")
+        sys.exit(1)  # 直接安全退出，不執行後續邏輯
 
     # 🎯 移到迴圈外：先決定這次要改哪一層
     layer_input = (

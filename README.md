@@ -43,7 +43,7 @@
 ```bash
 # 建立虛擬環境並同步安裝依賴
 uv venv
-uv pip install hidapi
+uv add hidapi
 ```
 
 ### 2. 執行指令

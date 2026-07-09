@@ -305,9 +305,6 @@ def find_valid_wired_device():
     檢查並尋找合法的有線直連裝置。
     如果發現無線接收器 (Dongle) 特徵，主動攔截並提示。
     """
-    TARGET_VID = 0x514C
-    TARGET_PID = 0x4155
-
     devices = hid.enumerate(TARGET_VID, TARGET_PID)
 
     if not devices:
